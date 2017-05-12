@@ -11,6 +11,7 @@ __sets = {}
 
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
+from datasets.seaLions import seaLions_kaggle
 import numpy as np
 
 # Set up voc_<year>_<split> using selective search "fast" mode
@@ -30,6 +31,12 @@ for year in ['2015']:
     for split in ['test', 'test-dev']:
         name = 'coco_{}_{}'.format(year, split)
         __sets[name] = (lambda split=split, year=year: coco(split, year))
+
+# Set up Kaggle Sea Lions dataset 
+seaLions_devkit_path = '/disk2/Faliu/FRCNN/py-faster-rcnn/data/seaLions'
+for split in ['train', 'test']:
+    name = '{}_{}'.format('seaLions', split)
+    __sets[name] = (lambda split=split: seaLions_kaggle(split, seaLions_devkit_path))
 
 def get_imdb(name):
     """Get an imdb (image database) by name."""

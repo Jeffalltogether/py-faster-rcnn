@@ -13,13 +13,14 @@ import roi_data_layer.roidb as rdl_roidb
 from utils.timer import Timer
 import numpy as np
 import os
+import google.protobuf.text_format
 
 from caffe.proto import caffe_pb2
 import google.protobuf as pb2
 
 class SolverWrapper(object):
     """A simple wrapper around Caffe's solver.
-    This wrapper gives us control over he snapshotting process, which we
+    This wrapper gives us control over the snapshotting process, which we
     use to unnormalize the learned bounding-box regression weights.
     """
 
@@ -124,7 +125,7 @@ def get_training_roidb(imdb):
 
     return imdb.roidb
 
-def filter_roidb(roidb):
+def filter_roidb(roidb):imdb.append_flipped_images
     """Remove roidb entries that have no usable RoIs."""
 
     def is_valid(entry):

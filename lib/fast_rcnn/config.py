@@ -36,18 +36,20 @@ __C.TRAIN = edict()
 # Scales to use during training (can list multiple scales)
 # Each scale is the pixel size of an image's shortest side
 __C.TRAIN.SCALES = (600,)
+#__C.TRAIN.SCALES = (3744,)
 
 # Max pixel size of the longest side of a scaled input image
 __C.TRAIN.MAX_SIZE = 1000
+#__C.TRAIN.MAX_SIZE = 5616
 
 # Images to use per minibatch
-__C.TRAIN.IMS_PER_BATCH = 2
+__C.TRAIN.IMS_PER_BATCH = 10
 
 # Minibatch size (number of regions of interest [ROIs])
-__C.TRAIN.BATCH_SIZE = 128
+__C.TRAIN.BATCH_SIZE = 126
 
 # Fraction of minibatch that is labeled foreground (i.e. class > 0)
-__C.TRAIN.FG_FRACTION = 0.25
+__C.TRAIN.FG_FRACTION = 0.10
 
 # Overlap threshold for a ROI to be considered foreground (if >= FG_THRESH)
 __C.TRAIN.FG_THRESH = 0.5
@@ -58,7 +60,7 @@ __C.TRAIN.BG_THRESH_HI = 0.5
 __C.TRAIN.BG_THRESH_LO = 0.1
 
 # Use horizontally-flipped images during training?
-__C.TRAIN.USE_FLIPPED = True
+__C.TRAIN.USE_FLIPPED = False
 
 # Train bounding-box regressors
 __C.TRAIN.BBOX_REG = True
@@ -94,7 +96,9 @@ __C.TRAIN.PROPOSAL_METHOD = 'selective_search'
 # Make minibatches from images that have similar aspect ratios (i.e. both
 # tall and thin or both short and wide) in order to avoid wasting computation
 # on zero-padding.
-__C.TRAIN.ASPECT_GROUPING = True
+
+# Set to False, becasue the function `def _shuffle_roidb_inds(self)` in `layer.py` was causing an error
+__C.TRAIN.ASPECT_GROUPING = False
 
 # Use RPN to detect objects
 __C.TRAIN.HAS_RPN = False
@@ -115,7 +119,7 @@ __C.TRAIN.RPN_PRE_NMS_TOP_N = 12000
 # Number of top scoring boxes to keep after applying NMS to RPN proposals
 __C.TRAIN.RPN_POST_NMS_TOP_N = 2000
 # Proposal height and width both need to be greater than RPN_MIN_SIZE (at orig image scale)
-__C.TRAIN.RPN_MIN_SIZE = 16
+__C.TRAIN.RPN_MIN_SIZE = 10
 # Deprecated (outside weights)
 __C.TRAIN.RPN_BBOX_INSIDE_WEIGHTS = (1.0, 1.0, 1.0, 1.0)
 # Give the positive RPN examples weight of p * 1 / {num positives}
@@ -133,9 +137,11 @@ __C.TEST = edict()
 # Scales to use during testing (can list multiple scales)
 # Each scale is the pixel size of an image's shortest side
 __C.TEST.SCALES = (600,)
+# __C.TEST.SCALES = (3744,)
 
 # Max pixel size of the longest side of a scaled input image
 __C.TEST.MAX_SIZE = 1000
+# __C.TEST.MAX_SIZE = 5616
 
 # Overlap threshold used for non-maximum suppression (suppress boxes with
 # IoU >= this threshold)
@@ -161,7 +167,7 @@ __C.TEST.RPN_PRE_NMS_TOP_N = 6000
 ## Number of top scoring boxes to keep after applying NMS to RPN proposals
 __C.TEST.RPN_POST_NMS_TOP_N = 300
 # Proposal height and width both need to be greater than RPN_MIN_SIZE (at orig image scale)
-__C.TEST.RPN_MIN_SIZE = 16
+__C.TEST.RPN_MIN_SIZE = 10
 
 
 #
@@ -193,13 +199,13 @@ __C.ROOT_DIR = osp.abspath(osp.join(osp.dirname(__file__), '..', '..'))
 __C.DATA_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'data'))
 
 # Model directory
-__C.MODELS_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'models', 'pascal_voc'))
+__C.MODELS_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'models', 'kaggle_seaLions'))
 
 # Name (or path to) the matlab executable
 __C.MATLAB = 'matlab'
 
 # Place outputs under an experiments directory
-__C.EXP_DIR = 'default'
+__C.EXP_DIR = 'seaLions'
 
 # Use GPU implementation of non-maximum suppression
 __C.USE_GPU_NMS = True
