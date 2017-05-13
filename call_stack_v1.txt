@@ -1,0 +1,69 @@
+./tools/train_faster_rcnn_alt_opt.py
+./tools/train_faster_rcnn_alt_opt.py
+
+fast_rcnn.config.cfg_from_file
+	fast_rcnn.config.cfg_from_file._merge_a_into_b
+
+tools.train_faster_rcnn_alt_opt.get_solvers
+
+###### Stage 1 RPN, init from ImageNet model ######
+tools.train_faster_rcnn_alt_opt.train_rpn
+	tools.train_faster_rcnn_alt_opt._init_caffe
+	tools.train_faster_rcnn_alt_opt.get_roidb
+		datasets.factory.get_imdb
+			datasets.seaLions_kaggle()                <== this created an imdb class with many class methods
+				datasets.seaLions_kaggle._load_image_set_index
+		datasets.imdb.set_proposal_method
+		fast_rcnn.train.get_training_roidb
+			roi_data_layer.roidb.rdl_roidb.prepare_roidb
+				datasets.imdb.image_path_at
+			datasets.imdb.append_flipped_images
+	fast_rcnn.config.get_output_dir
+	fast_rcnn.train.train_net
+		fast_rcnn.train.filter_roidb
+		fast_rcnn.train.SolverWrapper
+			roi_data_layer.roidb.rdl_roidb.add_bbox_regression_targets
+				roi_data_layer.roidb.rdl_roidb._compute_targets
+					fast_rcnn.bbox_transform.bbox_transform
+		fast_rcnn.train.train_model
+			fast_rcnn.train.snapshot
+
+###### Stage 1 RPN, generate proposals ######
+tools.train_faster_rcnn_alt_opt.rpn_generate  <===  Write proposals to disk
+	tools.train_faster_rcnn_alt_opt._init_caffe
+	datasets.factory.get_imdb
+	fast_rcnn.config.get_output_dir
+	rpn.generate.imdb_proposals
+		datasets.imdb.image_path_at
+		rpn.generate.im_proposals
+			rpn.generate._get_image_blob  <=== this resizes the images
+				utils.blob.im_list_to_blob
+		rpn.generate._vis_proposals  <=== this does not seem to be executed??
+
+###### Stage 1 Fast R-CNN using RPN proposals, init from ImageNet model ######
+tools.train_faster_rcnn_alt_opt.train_fast_rcnn
+	tools.train_faster_rcnn_alt_opt._init_caffe
+	tools.train_faster_rcnn_alt_opt.get_roidb
+		datasets.factory.get_imdb
+		datasets.imdb.set_proposal_method
+		fast_rcnn.train.get_training_roidb
+			datasets.imdb.append_flipped_images
+	fast_rcnn.train.train_net
+		fast_rcnn.train.filter_roidb
+		fast_rcnn.train.SolverWrapper
+			roi_data_layer.roidb.rdl_roidb.add_bbox_regression_targets
+			roi_data_layer.roidb.rdl_roidb._compute_targets
+				fast_rcnn.bbox_transform.bbox_transform
+		fast_rcnn.train.train_model
+			fast_rcnn.train.snapshot
+
+###### Stage 2 RPN, init from stage 1 Fast R-CNN model ######
+tools.train_faster_rcnn_alt_opt.train_rpn
+
+###### Stage 2 RPN, generate proposals ######
+tools.train_faster_rcnn_alt_opt.rpn_generate
+
+###### Stage 2 Fast R-CNN, init from stage 2 RPN R-CNN model ######
+tools.train_faster_rcnn_alt_opt.train_fast_rcnn
+
+###### Create final model (just a copy of the last stage) ######

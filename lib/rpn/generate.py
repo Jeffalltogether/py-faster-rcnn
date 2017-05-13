@@ -94,6 +94,7 @@ def im_proposals(net, im):
     scale = blobs['im_info'][0, 2]
     boxes = blobs_out['rois'][:, 1:].copy() / scale
     scores = blobs_out['scores'].copy()
+
     return boxes, scores
 
 def imdb_proposals(net, imdb):

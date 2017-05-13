@@ -122,10 +122,9 @@ def get_training_roidb(imdb):
     print 'Preparing training data...'
     rdl_roidb.prepare_roidb(imdb)
     print 'done'
-
     return imdb.roidb
 
-def filter_roidb(roidb):imdb.append_flipped_images
+def filter_roidb(roidb):
     """Remove roidb entries that have no usable RoIs."""
 
     def is_valid(entry):

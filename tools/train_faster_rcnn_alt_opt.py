@@ -59,6 +59,7 @@ def parse_args():
 
 def get_roidb(imdb_name, rpn_file=None):
     imdb = get_imdb(imdb_name)
+
     print 'Loaded dataset `{:s}` for training'.format(imdb.name)
     imdb.set_proposal_method(cfg.TRAIN.PROPOSAL_METHOD)
     print 'Set proposal method: {:s}'.format(cfg.TRAIN.PROPOSAL_METHOD)
