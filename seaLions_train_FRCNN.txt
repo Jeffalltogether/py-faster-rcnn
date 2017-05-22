@@ -1,0 +1,45 @@
+# Path Variables:
+export DYLD_LIBRARY_PATH=/usr/local/cuda/lib64:$DYLD_LIBRARY_PATH
+export PYTHONPATH=/disk2/jeff/Analyzer/python:$PYTHONPATH
+export PYTHONPATH=/disk2/jeff/Analyzer/config:$PYTHONPATH
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
+export CUDA_HOME=/usr/local/cuda
+export PYTHONPATH=/disk2/jeff/kaggle/sealionOD:$PYTHONPATH
+export PYTHONPATH=/disk2/Faliu/FRCNN/py-faster-rcnn/caffe-fast-rcnn/python:$PYTHONPATH
+export PYTHONPATH=/disk2/Faliu/FRCNN/py-faster-rcnn/tools:$PYTHONPATH
+
+# Train the model:
+./tools/train_faster_rcnn_alt_opt.py --gpu 1 --net_name kaggle_seaLions --weights ./data/imagenet_models/VGG_CNN_M_1024.v2.caffemodel --imdb seaLions_train --cfg ./experiments/cfgs/config.yml
+
+# trace and Train model:
+python -m trace --count -C . ./tools/train_faster_rcnn_alt_opt.py --gpu 0 --net_name kaggle_seaLions --weights ./data/imagenet_models/VGG_CNN_M_1024.v2.caffemodel --imdb seaLions_train --cfg ./experiments/cfgs/config.yml
+
+# Train Model in Background
+nohup ./tools/train_faster_rcnn_alt_opt.py --gpu 0 --net_name kaggle_seaLions --weights ./data/imagenet_models/VGG_CNN_M_1024.v2.caffemodel --imdb seaLions_train --cfg ./experiments/cfgs/config.yml &
+
+# View progress of background training
+tail nohup.out   # must be in the directory where the original nohup command was executed
+
+# stop a nohup process first find the PID with
+ps -ef | grep <key word>
+
+# then kill the process with
+kill -9 <PID>
+
+
+# Deploy the trained model:
+./tools/test_net.py --gpu 0 --def ./models/kaggle_seaLions/faster_rcnn_alt_opt/faster_rcnn_test.pt --net ./output/seaLions/train/kaggle_seaLions_faster_rcnn_final.caffemodel --cfg ./experiments/cfgs/config.yml --imdb seaLions_test
+
+# allow larger scale images as input
+minibatch.py
+        im, im_scale = prep_im_for_blob(im, cfg.PIXEL_MEANS, target_size,
+                                        cfg.TRAIN.MAX_SIZE)
+
+# allow smaller ROI's to be detected
+https://github.com/rbgirshick/py-faster-rcnn/issues/86
+
+# uncompress .7z files
+7z x TrainSmall2.7z
+
+# Download datasets from Kaggle
+wget -x --load-cookies cookies.txt 7z https://www.kaggle.com/c/noaa-fisheries-steller-sea-lion-population-count/download/TrainSmall2.7z

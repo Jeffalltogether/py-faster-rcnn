@@ -72,9 +72,16 @@ def parse_args():
     return args
 
 def vis_detections(im, class_name, dets, image_name, thresh=0.5):
+    saveDestination = os.path.join('/disk2/Faliu/FRCNN/py-faster-rcnn/data/seaLions/inferenceResults/')
+    if not os.path.exists(saveDestination):
+        os.mkdir(saveDestination)
+
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
+        print dets[0, -1]
+        print dets[0, -1] >= thresh
+        print "exiting"
         return
 
     im = im[:, :, (2, 1, 0)]
@@ -104,9 +111,9 @@ def vis_detections(im, class_name, dets, image_name, thresh=0.5):
     # plt.draw()
 
     # save figures
-    saveDestination = os.path.join('/disk2/Faliu/FRCNN/py-faster-rcnn/data/seaLions/results/', image_name)
-    print saveDestination
-    plt.savefig(saveDestination, bbox_inches='tight')
+    saveName = os.path.join(saveDestination, class_name + '_' + image_name)
+    print 'saving inference %s' %(saveName)
+    plt.savefig(saveName, bbox_inches='tight')
 
 def demo(net, image_name):
     # Load the demo image
@@ -122,7 +129,7 @@ def demo(net, image_name):
         '{:d} object proposals').format(timer.total_time, boxes.shape[0])
 
     # Visualize detections for each class
-    CONF_THRESH = 0.5
+    CONF_THRESH = 0.2
     NMS_THRESH = 0.3
     for cls_ind, cls in enumerate(CLASSES[1:]):
         cls_ind += 1 # because we skipped background
@@ -171,10 +178,16 @@ if __name__ == '__main__':
     for i in xrange(2):
         _, _= im_detect(net, im)
 
-    im_names = ['42.jpg', '47.jpg', '44.jpg', '43.jpg','45.jpg', '49.jpg', '50.jpg']
+    # get test image names
+    test_ims = list(open('/disk2/Faliu/FRCNN/py-faster-rcnn/data/seaLions/data/ImageSets/test.txt','r'))
+    im_names = []
+    for im in test_ims:
+        im_names.append(str.strip(im) + '.jpg')
+
+    print im_names
+
     for im_name in im_names:
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
         print 'Demo for data/seaLions/data/JPEGImages/{}'.format(im_name)
         demo(net, im_name)
 
-    # plt.show()
